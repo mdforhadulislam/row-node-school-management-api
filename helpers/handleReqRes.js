@@ -4,6 +4,7 @@ const routes = require("../routes");
 const {
    notFoundHandler,
 } = require("../hendlers/RouteHandlers/notFoundHandler");
+const { parsrJSON } = require('../helpers/utilites')
 
 const handler = {};
 
@@ -35,22 +36,23 @@ handler.handleReqRes = (req, res) => {
 
    req.on("data", (buffer) => {
       realData += decoder.write(buffer);
+      requestProperties.body = parsrJSON(realData)
 
       chosenHandler(requestProperties, (statusCode, payload) => {
          statusCode = typeof (statusCode) === "number" ? statusCode : 500
          payload = typeof (payload) === "object" ? payload : {}
 
          const payloadString = JSON.stringify(payload)
-
+         // request.setHeader('content-type', 'text/html');
+         res.setHeader("Content-Type", "application/json")
          res.writeHead(statusCode)
          res.end(payloadString)
       })
 
    });
 
-   req.on("end", (buffer) => {
+   req.on("end", () => {
       realData += decoder.end();
-      res.end("Home")
    });
 };
 

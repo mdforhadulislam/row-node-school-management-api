@@ -1,7 +1,9 @@
 const http = require("http");
 const { handleReqRes } = require("./helpers/handleReqRes");
+const data = require("./lib/data")
 
 const app = {};
+
 
 app.config = {
   port: 5500,

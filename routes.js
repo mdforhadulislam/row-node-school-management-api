@@ -1,7 +1,11 @@
-const { notFoundHandler } = require("./hendlers/RouteHandlers/notFoundHandler");
+const { allStudents } = require("./hendlers/RouteHandlers/all-students");
+const { studentLogin } = require("./hendlers/RouteHandlers/studentLogin");
+const { teacherLogin } = require("./hendlers/RouteHandlers/teacherLogin");
 
 const routes = {
-   notfound: notFoundHandler
+   "teacher/login": teacherLogin,
+   "student/login": studentLogin,
+   "all-students": allStudents,
 };
 
 module.exports = routes;
