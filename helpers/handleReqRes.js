@@ -1,31 +1,57 @@
 const url = require("url");
 const { StringDecoder } = require("string_decoder");
+const routes = require("../routes");
+const {
+   notFoundHandler,
+} = require("../hendlers/RouteHandlers/notFoundHandler");
 
 const handler = {};
 
 handler.handleReqRes = (req, res) => {
-  const parsedURL = url.parse(req.url, true);
-  const path = parsedURL.pathname;
-  const trimmedPath = path.replace(/^\/+|\/+$/g, " ");
-  const method = req.method.toLowerCase();
-  const queryStringObject = parsedURL.query;
-  const headersObject = parsedURL.headers;
+   const parsedURL = url.parse(req.url, true);
+   const path = parsedURL.pathname;
+   const trimmedPath = path.replace(/^\/+|\/+$/g, "");
+   const method = req.method.toLowerCase();
+   const queryStringObject = parsedURL.query;
+   const headersObject = parsedURL.headers;
 
-  const decoder = new StringDecoder("utf-8");
+   const requestProperties = {
+      parsedURL,
+      path,
+      trimmedPath,
+      method,
+      queryStringObject,
+      headersObject,
+   }
 
-  let realData = "";
+   const decoder = new StringDecoder("utf-8");
 
-  req.on("data", (buffer) => {
-    realData += decoder.write(buffer);
-  });
+   let realData = "";
 
-  req.on("end", (buffer) => {
-    realData += decoder.end();
+   const chosenHandler = routes[trimmedPath]
+      ? routes[trimmedPath]
+      : notFoundHandler;
 
-    console.log(realData);
 
-    res.end("Hello World");
-  });
+   req.on("data", (buffer) => {
+      realData += decoder.write(buffer);
+
+      chosenHandler(requestProperties, (statusCode, payload) => {
+         statusCode = typeof (statusCode) === "number" ? statusCode : 500
+         payload = typeof (payload) === "object" ? payload : {}
+
+         const payloadString = JSON.stringify(payload)
+
+         res.writeHead(statusCode)
+         res.end(payloadString)
+      })
+
+   });
+
+   req.on("end", (buffer) => {
+      realData += decoder.end();
+      res.end("Home")
+   });
 };
 
 module.exports = handler;
