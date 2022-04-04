@@ -3,10 +3,10 @@ const { parsrJSON } = require('../../helpers/utilites')
 
 const handler = {};
 
-handler.studentRoutine = (requestProperties, callback) => {
+handler.examRoutine = (requestProperties, callback) => {
    const acceptedMethods = ["get", "post", "put", 'delete'];
    if (acceptedMethods.indexOf(requestProperties.method) > -1) {
-      handler._student_routine[requestProperties.method](requestProperties, callback)
+      handler._student_exam_routine[requestProperties.method](requestProperties, callback)
    } else {
       callback(405, {
          massage: "You are Not Allow"
@@ -14,9 +14,9 @@ handler.studentRoutine = (requestProperties, callback) => {
    }
 };
 
-handler._student_routine = {};
+handler._student_exam_routine = {};
 
-handler._student_routine.get = (requestProperties, callback) => {
+handler._student_exam_routine.get = (requestProperties, callback) => {
    const { queryStringObject } = requestProperties
    const className = typeof (queryStringObject.class) === "string" && queryStringObject.class.trim().length > 0 ? queryStringObject.class : false
 
@@ -41,16 +41,17 @@ handler._student_routine.get = (requestProperties, callback) => {
 
 }
 
-handler._student_routine.post = (requestProperties, callback) => {
+handler._student_exam_routine.post = (requestProperties, callback) => {
    const { body } = requestProperties
    const className = typeof (body.class) === "string" && body.class.trim().length > 0 ? body.class : false
+   const examTime = typeof (body.time) === "string" && body.time.trim().length > 0 ? body.time : false
    const routine = typeof (body.routine) === "object" && body.routine.length > 0 ? body.routine : false
 
-   if (className && routine) {
+   if (className && routine && examTime) {
       data.read('routine', className, (err1) => {
          if (err1) {
             let routineObject = {
-               class: className, routine
+               class: className, routine, time: examTime
             }
 
             data.create('routine', className, routineObject, (err2) => {
@@ -78,13 +79,14 @@ handler._student_routine.post = (requestProperties, callback) => {
 
 }
 
-handler._student_routine.put = (requestProperties, callback) => {
+handler._student_exam_routine.put = (requestProperties, callback) => {
    const { body } = requestProperties
    const className = typeof (body.class) === "string" && body.class.trim().length > 0 ? body.class : false
-   const routine = typeof (body.routine) === "object" && body.routine.trim().length > 0 ? body.routine : false
+   const examTime = typeof (body.time) === "string" && body.time.trim().length > 0 ? body.time : false
+   const routine = typeof (body.routine) === "object" && body.routine.length > 0 ? body.routine : false
 
    if (className) {
-      if (className || routine) {
+      if (className || routine || examTime) {
          data.read('routine', className, (err, routineData) => {
             const routineOBJ = parsrJSON(routineData)
             if (!err) {
@@ -93,6 +95,9 @@ handler._student_routine.put = (requestProperties, callback) => {
                }
                if (routine) {
                   routineOBJ.routine = routine
+               }
+               if (examTime) {
+                  routineOBJ.time = examTime
                }
 
                data.update('routine', className, routineOBJ, (err) => {
@@ -129,7 +134,7 @@ handler._student_routine.put = (requestProperties, callback) => {
 
 }
 
-handler._student_routine.delete = (requestProperties, callback) => {
+handler._student_exam_routine.delete = (requestProperties, callback) => {
    const { queryStringObject } = requestProperties
    const className = typeof (queryStringObject.class) === "string" && queryStringObject.class.trim().length > 0 ? queryStringObject.class : false
 

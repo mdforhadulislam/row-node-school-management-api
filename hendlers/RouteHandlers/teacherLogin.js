@@ -58,7 +58,7 @@ handler._teacher.post = (requestProperties, callback) => {
       data.read('teacher', `${firstName}-${lastName}-${idNumber}`, (err1) => {
          if (err1) {
             let teacherObject = {
-               tecacherID: `${firstName}-${lastName}-${idNumber}`,
+               teacherID: `${firstName}-${lastName}-${idNumber}`,
                firstName,
                lastName,
                phone,

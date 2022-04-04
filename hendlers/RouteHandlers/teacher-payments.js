@@ -3,10 +3,10 @@ const { parsrJSON } = require('../../helpers/utilites')
 
 const handler = {};
 
-handler.studentPayments = (requestProperties, callback) => {
+handler.teacherPayments = (requestProperties, callback) => {
    const acceptedMethods = ["get", "post", "put", 'delete'];
    if (acceptedMethods.indexOf(requestProperties.method) > -1) {
-      handler._student_payments[requestProperties.method](requestProperties, callback)
+      handler._teacher_payments[requestProperties.method](requestProperties, callback)
    } else {
       callback(405, {
          massage: "You are Not Allow"
@@ -14,52 +14,52 @@ handler.studentPayments = (requestProperties, callback) => {
    }
 };
 
-handler._student_payments = {};
+handler._teacher_payments = {};
 
-handler._student_payments.get = (requestProperties, callback) => {
+handler._teacher_payments.get = (requestProperties, callback) => {
    const { queryStringObject } = requestProperties
-   const studentID = typeof (queryStringObject.id) === "string" && queryStringObject.id.trim().length > 0 ? queryStringObject.id : false
+   const teacherID = typeof (queryStringObject.id) === "string" && queryStringObject.id.trim().length > 0 ? queryStringObject.id : false
 
-   if (studentID) {
-      data.read('student-payments', studentID, (err, paymentDatils) => {
+   if (teacherID) {
+      data.read('teacher-payments', teacherID, (err, paymentDatils) => {
          const paymentDatilsOBJ = parsrJSON(paymentDatils)
          if (!err && paymentDatilsOBJ) {
             callback(200, paymentDatilsOBJ)
          } else {
             callback(404, {
-               error: "Requested student payments Not Found"
+               error: "Requested teacher payments Not Found"
             })
          }
       })
    } else {
       callback(404, {
-         error: "Requested student payments Not Found"
+         error: "Requested teacher payments Not Found"
       })
    }
 
 
 }
 
-handler._student_payments.post = (requestProperties, callback) => {
+handler._teacher_payments.post = (requestProperties, callback) => {
    const { body } = requestProperties
-   const studentID = typeof (body.studentID) === "string" && body.studentID.trim().length > 0 ? body.studentID : false
+   const teacherID = typeof (body.teacherID) === "string" && body.teacherID.trim().length > 0 ? body.teacherID : false
    const payment = typeof (body.payment) === "object" && body.payment.length > 0 ? body.payment : false
 
-   if (studentID && payment) {
-      data.read('student', studentID, (err1) => {
+   if (teacherID && payment) {
+      data.read('teacher', teacherID, (err1) => {
          if (!err1) {
-            data.read('student-payments', studentID, (err2) => {
+            data.read('teacher-payments', teacherID, (err2) => {
                if (err2) {
                   let paymentObject = {
-                     studentID,
+                     teacherID,
                      payment
                   }
-                  data.create('student-payments', studentID, paymentObject, (err3) => {
+                  data.create('teacher-payments', teacherID, paymentObject, (err3) => {
                      if (!err3) {
                         callback(200, paymentObject)
                      } else {
                         callback(500, {
-                           error: "could not create student"
+                           error: "could not create teacher"
                         })
                      }
                   })
@@ -87,46 +87,46 @@ handler._student_payments.post = (requestProperties, callback) => {
 
 }
 
-handler._student_payments.put = (requestProperties, callback) => {
+handler._teacher_payments.put = (requestProperties, callback) => {
    const { body } = requestProperties
-   const studentID = typeof (body.studentID) === "string" && body.studentID.trim().length > 0 ? body.studentID : false
+   const teacherID = typeof (body.teacherID) === "string" && body.teacherID.trim().length > 0 ? body.teacherID : false
    const payment = typeof (body.payment) === "object" && body.payment.length > 0 ? body.payment : false
 
-   if (studentID) {
+   if (teacherID) {
       if (payment) {
-         data.read('student-payments', studentID, (err, paymentsData) => {
+         data.read('teacher-payments', teacherID, (err, paymentsData) => {
             const paymentsDataOBJ = parsrJSON(paymentsData)
             if (!err) {
                if (paymentsDataOBJ) {
                   paymentsDataOBJ.payment = paymentsDataOBJ
                }
 
-               if (studentID) {
-                  data.read('student-payments', studentID, (err, paymentData) => {
+               if (teacherID) {
+                  data.read('teacher-payments', teacherID, (err, paymentData) => {
                      if (!err && paymentData) {
 
-                        // when i find the  file payments foler then i delete this student payment file 
-                        data.delete('student-payments', studentID, (err) => {
+                        // when i find the  file payments foler then i delete this teacher payment file 
+                        data.delete('teacher-payments', teacherID, (err) => {
                            if (!err) {
-                              // then i read student folder this student file find student file then i go payment folder and i read student payment file then not finde i student payment file 
-                              data.read('student', studentID, (err1) => {
+                              // then i read teacher folder this teacher file find teacher file then i go payment folder and i read teacher payment file then not finde i teacher payment file 
+                              data.read('teacher', teacherID, (err1) => {
 
                                  if (!err1) {
-                                    data.read('student-payments', studentID, (err2) => {
+                                    data.read('teacher-payments', teacherID, (err2) => {
                                        if (err2) {
                                           console.log(payment);
                                           let paymentObject = {
-                                             studentID,
+                                             teacherID,
                                              payment
 
                                           }
-                                          // then i create student new payment file 
-                                          data.create('student-payments', studentID, paymentObject, (err3) => {
+                                          // then i create teacher new payment file 
+                                          data.create('teacher-payments', teacherID, paymentObject, (err3) => {
                                              if (!err3) {
                                                 callback(200, paymentObject)
                                              } else {
                                                 callback(500, {
-                                                   error: "could not create student"
+                                                   error: "could not create teacher"
                                                 })
                                              }
                                           })
@@ -169,10 +169,10 @@ handler._student_payments.put = (requestProperties, callback) => {
                //ther are not using (data.update )fuction becose ther was a problem
 
 
-               // data.update('payments', studentID, paymentsDataOBJ, (err) => {
+               // data.update('payments', teacherID, paymentsDataOBJ, (err) => {
                //    if (!err) {
                //       callback(500, {
-               //          massage: "student was update successfull"
+               //          massage: "teacher was update successfull"
                //       })
                //    } else {
                //       callback(500, {
@@ -193,7 +193,7 @@ handler._student_payments.put = (requestProperties, callback) => {
       }
    } else {
       callback(400, {
-         error: "invalid Student id number! plz try it"
+         error: "invalid teacher id number! plz try it"
       })
    }
 
@@ -201,17 +201,17 @@ handler._student_payments.put = (requestProperties, callback) => {
 
 }
 
-handler._student_payments.delete = (requestProperties, callback) => {
+handler._teacher_payments.delete = (requestProperties, callback) => {
    const { queryStringObject } = requestProperties
-   const studentID = typeof (queryStringObject.id) === "string" && queryStringObject.id.trim().length > 0 ? queryStringObject.id : false
+   const teacherID = typeof (queryStringObject.id) === "string" && queryStringObject.id.trim().length > 0 ? queryStringObject.id : false
 
    if (id) {
-      data.read('student-payments', studentID, (err, paymentData) => {
+      data.read('teacher-payments', teacherID, (err, paymentData) => {
          if (!err && paymentData) {
-            data.delete('student-payments', studentID, (err) => {
+            data.delete('teacher-payments', teacherID, (err) => {
                if (!err) {
                   callback(201, {
-                     massage: "student was succesfully delete!"
+                     massage: "teacher was succesfully delete!"
                   })
                } else {
                   callback(500, {
