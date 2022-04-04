@@ -17,7 +17,6 @@ handler.allStudents = (requestProperties, callback) => {
    }
 };
 
-
 handler._all_student = {};
 
 handler._all_student.get = (requestProperties, callback) => {

@@ -13,7 +13,6 @@ handler.schoolNotice = (requestProperties, callback) => {
    }
 };
 
-
 handler._school_notice = {};
 
 handler._school_notice.get = (requestProperties, callback) => {

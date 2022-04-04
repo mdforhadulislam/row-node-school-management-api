@@ -9,7 +9,7 @@ const handler = {};
 handler.allNotice = (requestProperties, callback) => {
    const acceptedMethods = ["get",];
    if (acceptedMethods.indexOf(requestProperties.method) > -1) {
-      handler._all_student[requestProperties.method](requestProperties, callback)
+      handler._all_notice[requestProperties.method](requestProperties, callback)
    } else {
       callback(405, {
          massage: "You are Not Allow"
@@ -17,11 +17,10 @@ handler.allNotice = (requestProperties, callback) => {
    }
 };
 
+handler._all_notice = {};
 
-handler._all_student = {};
-
-handler._all_student.get = (requestProperties, callback) => {
-   const directoryPath = path.join(__dirname, '/../../.data/student/');
+handler._all_notice.get = (requestProperties, callback) => {
+   const directoryPath = path.join(__dirname, '/../../.data/notice/');
    //passsing directoryPath and callback function
    let alldata = []
    fs.readdir(directoryPath, function (err, files) {
@@ -32,11 +31,11 @@ handler._all_student.get = (requestProperties, callback) => {
       }
       //listing all files using forEach
       files.forEach(function (file) {
-         data.read('student', file.split('.')[0], (err, data) => {
+         data.read('notice', file.split('.')[0], (err, data) => {
             if (!err) {
-               let studentdata = parsrJSON(data)
-               studentdata.password = hash(studentdata.password)
-               alldata.push(studentdata)
+               let noticedata = parsrJSON(data)
+               noticedata.password = hash(noticedata.password)
+               alldata.push(noticedata)
             } else {
                callback(500, {
                   error: "There was a server side error"
@@ -47,8 +46,6 @@ handler._all_student.get = (requestProperties, callback) => {
       setTimeout(() => { callback(200, alldata) }, 1000)
    });
 }
-
-
 
 
 module.exports = handler;

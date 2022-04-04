@@ -15,7 +15,6 @@ handler.teacherLogin = (requestProperties, callback) => {
    }
 };
 
-
 handler._teacher = {};
 
 handler._teacher.get = (requestProperties, callback) => {

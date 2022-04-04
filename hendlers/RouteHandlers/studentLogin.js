@@ -1,7 +1,6 @@
 const data = require('../../lib/data')
 const { parsrJSON } = require('../../helpers/utilites')
 
-
 const handler = {};
 
 handler.studentLogin = (requestProperties, callback) => {
@@ -14,7 +13,6 @@ handler.studentLogin = (requestProperties, callback) => {
       })
    }
 };
-
 
 handler._student = {};
 
