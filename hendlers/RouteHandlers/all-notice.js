@@ -6,7 +6,7 @@ const { parsrJSON, hash } = require('../../helpers/utilites')
 
 const handler = {};
 
-handler.allStudents = (requestProperties, callback) => {
+handler.allNotice = (requestProperties, callback) => {
    const acceptedMethods = ["get",];
    if (acceptedMethods.indexOf(requestProperties.method) > -1) {
       handler._all_student[requestProperties.method](requestProperties, callback)
