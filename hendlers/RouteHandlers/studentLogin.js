@@ -1,5 +1,5 @@
 const data = require('../../lib/data')
-const { hash, parsrJSON } = require('../../helpers/utilites')
+const { parsrJSON } = require('../../helpers/utilites')
 
 
 const handler = {};
@@ -56,7 +56,7 @@ handler._student.post = (requestProperties, callback) => {
    const isStudent = typeof (body.isStudent) === "boolean" && body.isStudent ? body.isStudent : false
 
    if (firstName && lastName && phone && password && isStudent && className) {
-      const idNumber = Math.floor(Math.random() * 100)
+      const idNumber = Math.floor(Math.random() * 1000)
       data.read('student', `${firstName}-${lastName}-${idNumber}`, (err1) => {
          if (err1) {
             let studentObject = {
@@ -65,13 +65,12 @@ handler._student.post = (requestProperties, callback) => {
                lastName,
                phone,
                class: className,
-               password: hash(password),
+               password,
                isStudent
             }
 
             data.create('student', `${firstName}-${lastName}-${idNumber}`, studentObject, (err2) => {
                if (!err2) {
-                  delete studentObject.password
                   callback(200, {
                      ...studentObject
                   })
@@ -121,7 +120,7 @@ handler._student.put = (requestProperties, callback) => {
                   studentOBJ.phone = phone
                }
                if (password) {
-                  studentOBJ.password = hash(password)
+                  studentOBJ.password = password
                }
 
                data.update('student', studentID, studentOBJ, (err) => {

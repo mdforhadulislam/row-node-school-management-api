@@ -43,7 +43,6 @@ handler.handleReqRes = (req, res) => {
          payload = typeof (payload) === "object" ? payload : {}
 
          const payloadString = JSON.stringify(payload)
-         // request.setHeader('content-type', 'text/html');
          res.setHeader("Content-Type", "application/json")
          res.writeHead(statusCode)
          res.end(payloadString)
@@ -53,6 +52,7 @@ handler.handleReqRes = (req, res) => {
 
    req.on("end", () => {
       realData += decoder.end();
+
    });
 };
 
