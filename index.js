@@ -6,7 +6,7 @@ const app = {};
 
 
 app.config = {
-  port: 5500,
+  port: 5000,
 };
 
 app.createServer = () => {
