@@ -94,76 +94,59 @@ handler._student_payments.put = (requestProperties, callback) => {
 
    if (studentID) {
       if (payment) {
-         data.read('student-payments', studentID, (err, paymentsData) => {
+         data.read('student-payments', studentID, (err1, paymentsData) => {
             const paymentsDataOBJ = parsrJSON(paymentsData)
-            if (!err) {
+
+            if (!err1) {
                if (paymentsDataOBJ) {
                   paymentsDataOBJ.payment = paymentsDataOBJ
                }
+               // when i find the  file payments foler then i delete this student payment file 
+               data.delete('student-payments', studentID, (err3) => {
+                  if (!err3) {
+                     // then i read student folder this student file find student file then i go payment folder and i read student payment file then not finde i student payment file 
+                     data.read('student', studentID, (err4) => {
+                        if (!err4) {
+                           data.read('student-payments', studentID, (err5) => {
+                              if (err5) {
+                                 let paymentObject = {
+                                    studentID,
+                                    payment
 
-               if (studentID) {
-                  data.read('student-payments', studentID, (err, paymentData) => {
-                     if (!err && paymentData) {
-
-                        // when i find the  file payments foler then i delete this student payment file 
-                        data.delete('student-payments', studentID, (err) => {
-                           if (!err) {
-                              // then i read student folder this student file find student file then i go payment folder and i read student payment file then not finde i student payment file 
-                              data.read('student', studentID, (err1) => {
-
-                                 if (!err1) {
-                                    data.read('student-payments', studentID, (err2) => {
-                                       if (err2) {
-                                          console.log(payment);
-                                          let paymentObject = {
-                                             studentID,
-                                             payment
-
-                                          }
-                                          // then i create student new payment file 
-                                          data.create('student-payments', studentID, paymentObject, (err3) => {
-                                             if (!err3) {
-                                                callback(200, paymentObject)
-                                             } else {
-                                                callback(500, {
-                                                   error: "could not create student"
-                                                })
-                                             }
-                                          })
-
-
-                                       } else {
-                                          callback(500, {
-                                             'error': "Thear was a problem in server side!"
-                                          })
-                                       }
-                                    })
-
-                                 } else {
-                                    callback(500, {
-                                       'error': "Thear was a problem in server side!"
-                                    })
                                  }
-                              })
+                                 // then i create student new payment file 
+                                 data.create('student-payments', studentID, paymentObject, (err6) => {
+                                    if (!err6) {
+                                       callback(200, paymentObject)
+                                    } else {
+                                       callback(500, {
+                                          error: "could not create student"
+                                       })
+                                    }
+                                 })
 
-                           } else {
-                              callback(500, {
-                                 error: "There was a server side error"
-                              })
-                           }
-                        })
 
-                     } else {
-                        callback(500, {
-                           error: "There was a server side error"
-                        })
-                     }
-                  })
-               } else {
-                  callback(400, {
-                     error: "There was a problem in your request"
-                  })
-               }
+                              } else {
+                                 callback(500, {
+                                    'error': "Thear was a problem in server side!"
+                                 })
+                              }
+                           })
+
+                        } else {
+                           callback(500, {
+                              'error': "Thear was a problem in server side!"
+                           })
+                        }
+                     })
+
+                  } else {
+                     callback(500, {
+                        error: "There was a server side error"
+                     })
+                  }
+               })
+
 
 
                //ther are not using (data.update )fuction becose ther was a problem

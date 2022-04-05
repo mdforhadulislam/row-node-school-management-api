@@ -53,7 +53,6 @@ handler.handleReqRes = (req, res) => {
    req.on("end", () => {
       realData += decoder.end();
    });
-   res.end("hello")
 };
 
 module.exports = handler;

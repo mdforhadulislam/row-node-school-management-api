@@ -114,7 +114,6 @@ handler._teacher_payments.put = (requestProperties, callback) => {
                                  if (!err1) {
                                     data.read('teacher-payments', teacherID, (err2) => {
                                        if (err2) {
-                                          console.log(payment);
                                           let paymentObject = {
                                              teacherID,
                                              payment
